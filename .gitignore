@@ -1,0 +1,47 @@
+# Hermes Multi-Agent 설정
+# 보안 파일 - Git에 올리지 마세요
+*.env
+.env
+.env.*
+
+# 세션 데이터
+sessions/
+*.db-journal
+*.db-wal
+
+# 로그
+logs/
+*.log
+
+# 캐시
+__pycache__/
+*.pyc
+.DS_Store
+
+# 번들 스킬 (Hermes 설치 시 자동 설치됨)
+skills/apple/
+skills/autonomous-ai-agents/
+skills/creative/
+skills/data-science/
+skills/devops/
+skills/diagramming/
+skills/dogfood/
+skills/domain/
+skills/email/
+skills/gaming/
+skills/gifs/
+skills/github/
+skills/inference-sh/
+skills/mcp/
+skills/media/
+skills/mlops/
+skills/note-taking/
+skills/productivity/
+skills/red-teaming/
+skills/research/
+skills/smart-home/
+skills/social-media/
+skills/software-development/
+skills/yuanbao/
+skills/.bundled_manifest
+skills/.curator_state

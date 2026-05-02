@@ -1,0 +1,6 @@
+model:
+  default: gemma4
+  provider: custom
+  base_url: http://localhost:11434/v1
+agent:
+  max_turns: 90
