@@ -1,0 +1,338 @@
+{
+  "preserve": [
+    {
+      "path": "architecture/model-prompting-conventions.md",
+      "size_bytes": 2214,
+      "wikilinks": 4
+    },
+    {
+      "path": "architecture/orchestrator-protocol.md",
+      "size_bytes": 5480,
+      "wikilinks": 8
+    },
+    {
+      "path": "architecture/cost-tiers.md",
+      "size_bytes": 4361,
+      "wikilinks": 5
+    },
+    {
+      "path": "architecture/roles.md",
+      "size_bytes": 4648,
+      "wikilinks": 8
+    },
+    {
+      "path": "architecture/validators.md",
+      "size_bytes": 2193,
+      "wikilinks": 7
+    },
+    {
+      "path": "concepts/회귀형_신.md",
+      "size_bytes": 2674,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/stage-separation-rule.md",
+      "size_bytes": 4291,
+      "wikilinks": 12
+    },
+    {
+      "path": "concepts/cosmic-horror-dual-layer.md",
+      "size_bytes": 1434,
+      "wikilinks": 5
+    },
+    {
+      "path": "concepts/natural-language-vfx-pipeline.md",
+      "size_bytes": 2968,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/llm-separation-design.md",
+      "size_bytes": 2858,
+      "wikilinks": 7
+    },
+    {
+      "path": "concepts/dual-ending-branch.md",
+      "size_bytes": 2708,
+      "wikilinks": 3
+    },
+    {
+      "path": "concepts/mythrill-architecture.md",
+      "size_bytes": 3517,
+      "wikilinks": 5
+    },
+    {
+      "path": "concepts/three-deity-types.md",
+      "size_bytes": 1524,
+      "wikilinks": 5
+    },
+    {
+      "path": "concepts/visual-inference-policy.md",
+      "size_bytes": 3123,
+      "wikilinks": 8
+    },
+    {
+      "path": "concepts/매크로_팩션_구조.md",
+      "size_bytes": 3877,
+      "wikilinks": 10
+    },
+    {
+      "path": "concepts/trigger-classification.md",
+      "size_bytes": 3117,
+      "wikilinks": 11
+    },
+    {
+      "path": "concepts/신의_세_유형.md",
+      "size_bytes": 4187,
+      "wikilinks": 10
+    },
+    {
+      "path": "concepts/광기형_신.md",
+      "size_bytes": 1332,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/naked-viewer.md",
+      "size_bytes": 3140,
+      "wikilinks": 11
+    },
+    {
+      "path": "concepts/vfx-input-labeling-guide.md",
+      "size_bytes": 4912,
+      "wikilinks": 15
+    },
+    {
+      "path": "concepts/mpm-constitutive-equation-swap.md",
+      "size_bytes": 2751,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/강림형_신.md",
+      "size_bytes": 1935,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/pre-bake-vfx-workflow.md",
+      "size_bytes": 2715,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/c-chasm-five-laws.md",
+      "size_bytes": 1026,
+      "wikilinks": 4
+    },
+    {
+      "path": "concepts/cosmic-horror-design-pattern.md",
+      "size_bytes": 4080,
+      "wikilinks": 3
+    },
+    {
+      "path": "concepts/C-Chasm_우주론.md",
+      "size_bytes": 3028,
+      "wikilinks": 9
+    },
+    {
+      "path": "concepts/정렬.md",
+      "size_bytes": 2560,
+      "wikilinks": 8
+    },
+    {
+      "path": "concepts/아자토스의_꿈_패턴.md",
+      "size_bytes": 3227,
+      "wikilinks": 13
+    },
+    {
+      "path": "entities/아담.md",
+      "size_bytes": 2991,
+      "wikilinks": 12
+    },
+    {
+      "path": "entities/본편_RPG_(C-Chasm).md",
+      "size_bytes": 3553,
+      "wikilinks": 11
+    },
+    {
+      "path": "entities/c-chasm-ip-core.md",
+      "size_bytes": 6830,
+      "wikilinks": 18
+    },
+    {
+      "path": "entities/mythrill-pipeline.md",
+      "size_bytes": 3399,
+      "wikilinks": 13
+    },
+    {
+      "path": "entities/grand-engine-vision.md",
+      "size_bytes": 2159,
+      "wikilinks": 17
+    },
+    {
+      "path": "entities/mythrill-roadmap.md",
+      "size_bytes": 4128,
+      "wikilinks": 7
+    },
+    {
+      "path": "entities/연금술_7단계_시스템.md",
+      "size_bytes": 3250,
+      "wikilinks": 11
+    }
+  ],
+  "compress": [
+    {
+      "path": "entities/llm1-validation.md",
+      "size_bytes": 7703,
+      "wikilinks": 20
+    },
+    {
+      "path": "entities/mythrill-spike-02.md",
+      "size_bytes": 5272,
+      "wikilinks": 28
+    },
+    {
+      "path": "entities/mythrill-spike-01.md",
+      "size_bytes": 3111,
+      "wikilinks": 4
+    }
+  ],
+  "review": [
+    {
+      "path": "SCHEMA.md",
+      "size_bytes": 2887,
+      "wikilinks": 2
+    },
+    {
+      "path": "log.md",
+      "size_bytes": 28377,
+      "wikilinks": 6
+    },
+    {
+      "path": "index.md",
+      "size_bytes": 1739,
+      "wikilinks": 62
+    },
+    {
+      "path": "CLAUDE.md",
+      "size_bytes": 8594,
+      "wikilinks": 25
+    },
+    {
+      "path": "concepts/mythrill-documentation-convention.md",
+      "size_bytes": 3212,
+      "wikilinks": 2
+    },
+    {
+      "path": "concepts/llm-wiki-setup.md",
+      "size_bytes": 1516,
+      "wikilinks": 5
+    },
+    {
+      "path": "concepts/three-branch-regression.md",
+      "size_bytes": 2101,
+      "wikilinks": 4
+    },
+    {
+      "path": "entities/DEUS_EX_MACHINA.md",
+      "size_bytes": 2642,
+      "wikilinks": 11
+    },
+    {
+      "path": "entities/session-2026-05-04.md",
+      "size_bytes": 9362,
+      "wikilinks": 22
+    },
+    {
+      "path": "entities/hermes-core-patches.md",
+      "size_bytes": 4403,
+      "wikilinks": 5
+    },
+    {
+      "path": "entities/claude-auth-bypass.md",
+      "size_bytes": 2972,
+      "wikilinks": 2
+    },
+    {
+      "path": "entities/mythrill-mvp-scope.md",
+      "size_bytes": 7815,
+      "wikilinks": 30
+    },
+    {
+      "path": "entities/discord-gateway.md",
+      "size_bytes": 1478,
+      "wikilinks": 2
+    },
+    {
+      "path": "entities/C-Chasm.md",
+      "size_bytes": 2628,
+      "wikilinks": 11
+    },
+    {
+      "path": "entities/c-chasm-project.md",
+      "size_bytes": 683,
+      "wikilinks": 5
+    },
+    {
+      "path": "entities/mythrill-rpg-showcase.md",
+      "size_bytes": 2200,
+      "wikilinks": 3
+    },
+    {
+      "path": "entities/local-agent-control-plane.md",
+      "size_bytes": 4771,
+      "wikilinks": 10
+    },
+    {
+      "path": "entities/THALIS.md",
+      "size_bytes": 2580,
+      "wikilinks": 10
+    },
+    {
+      "path": "entities/graphify-setup.md",
+      "size_bytes": 2900,
+      "wikilinks": 5
+    },
+    {
+      "path": "entities/github-config-backup.md",
+      "size_bytes": 1423,
+      "wikilinks": 2
+    },
+    {
+      "path": "entities/mythrill-pitch-assets.md",
+      "size_bytes": 5191,
+      "wikilinks": 13
+    },
+    {
+      "path": "entities/C-Chasm_Alpha.md",
+      "size_bytes": 3252,
+      "wikilinks": 7
+    },
+    {
+      "path": "entities/ai-rookie-2026.md",
+      "size_bytes": 4543,
+      "wikilinks": 12
+    },
+    {
+      "path": "entities/multi-agent-system.md",
+      "size_bytes": 4838,
+      "wikilinks": 11
+    },
+    {
+      "path": "entities/mythrill-infra.md",
+      "size_bytes": 2000,
+      "wikilinks": 2
+    },
+    {
+      "path": "entities/idea-validation-pipeline.md",
+      "size_bytes": 1234,
+      "wikilinks": 5
+    },
+    {
+      "path": "entities/cron-api-monitor.md",
+      "size_bytes": 1012,
+      "wikilinks": 3
+    },
+    {
+      "path": "entities/hermes-max-integration.md",
+      "size_bytes": 4801,
+      "wikilinks": 6
+    }
+  ]
+}

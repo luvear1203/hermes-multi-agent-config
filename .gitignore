@@ -46,3 +46,4 @@ skills/yuanbao/
 skills/.bundled_manifest
 skills/.curator_state
 backups/*.tar.gz
+.venv/
