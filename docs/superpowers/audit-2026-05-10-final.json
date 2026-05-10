@@ -1,0 +1,8 @@
+{
+  "compress_targets": [
+    "entities/llm1-validation.md",
+    "entities/mythrill-spike-02.md",
+    "entities/mythrill-spike-01.md"
+  ],
+  "decision": "option_1_conservative_2026-05-10"
+}

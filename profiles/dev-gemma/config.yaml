@@ -1,6 +1,10 @@
+# dev-gemma — Code Implementation Specialist
+# Reactivated 2026-05-07: assigned gemma-4-31b-it via Google AI Studio (free tier).
+# Same model as tech-artist but separate role: dev-gemma writes/tests code,
+# tech-artist translates NL to physical parameters.
 model:
-  default: gemma4
-  provider: custom
-  base_url: http://localhost:11434/v1
+  default: gemma-4-31b-it
+  provider: gemini
+  base_url: https://generativelanguage.googleapis.com/v1beta
 agent:
   max_turns: 90

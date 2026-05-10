@@ -1,5 +1,24 @@
+# Researcher profile — dual-model: Researcher A (Sonnet) + Researcher B (DeepSeek V4-Pro)
+# Default = claude-sonnet-4-5-20250929 (200K context, fits Max OAuth standard tier).
+# WHY NOT sonnet-4-6: hermes chat injects ~50-100K of system prompt + tools + memory,
+#   which on sonnet-4-6 (1M context family) triggers HTTP 429 "Extra usage required
+#   for long context". sonnet-4-5 is 200K and stays under the long-context threshold.
+#   Use sonnet-4-6 ONLY for explicit long-context work via -m override.
+# Override per call:
+#   hermes chat --profile researcher -m claude-sonnet-4-6 --provider anthropic   # only if you really need 1M
+#   hermes chat --profile researcher -m deepseek-v4-pro  --provider deepseek    # Researcher B
+# Or via delegate_task with model override (delegate_task system prompt is small,
+# so sonnet-4-6 is safe via that path).
 model:
-  default: claude-sonnet-4
+  default: claude-sonnet-4-5-20250929
   provider: anthropic
+providers:
+  deepseek:
+    base_url: https://api.deepseek.com/v1
+    api_key_env: DEEPSEEK_API_KEY
+    models:
+      - deepseek-v4-pro
+      - deepseek-v4-flash
+fallback_providers: []
 agent:
   max_turns: 60

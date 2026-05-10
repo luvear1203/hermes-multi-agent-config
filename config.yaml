@@ -1,7 +1,7 @@
 model:
-  default: deepseek-v4-pro
-  provider: deepseek
-  base_url: https://api.deepseek.com
+  default: gpt-5.5
+  provider: openai-codex
+  base_url: https://chatgpt.com/backend-api/codex
 providers: {}
 fallback_providers: []
 credential_pool_strategies: {}
@@ -20,7 +20,7 @@ agent:
   image_input_mode: auto
   disabled_toolsets: []
   verbose: false
-  reasoning_effort: medium
+  reasoning_effort: xhigh
   personalities:
     helpful: You are a helpful, friendly AI assistant.
     concise: You are a concise assistant. Keep responses brief and to the point.
@@ -127,6 +127,9 @@ compression:
   hygiene_hard_message_limit: 400
 prompt_caching:
   cache_ttl: 5m
+openrouter:
+  response_cache: true
+  response_cache_ttl: 300
 bedrock:
   region: ''
   discovery:
@@ -324,6 +327,9 @@ curator:
   min_idle_hours: 2
   stale_after_days: 30
   archive_after_days: 90
+  backup:
+    enabled: true
+    keep: 5
 honcho: {}
 timezone: ''
 discord:
@@ -393,6 +399,7 @@ onboarding:
   seen:
     openclaw_residue_cleanup: true
     tool_progress_prompt: true
+    busy_input_prompt: true
 updates:
   pre_update_backup: false
   backup_keep: 5

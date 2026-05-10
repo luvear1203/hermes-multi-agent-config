@@ -1,7 +1,7 @@
 model:
-  default: deepseek-v4-pro
-  provider: deepseek
-  base_url: https://api.deepseek.com
+  default: gpt-5.5
+  provider: openai-codex
+  base_url: https://chatgpt.com/backend-api/codex
 providers: {}
 fallback_providers: []
 credential_pool_strategies: {}
@@ -20,7 +20,7 @@ agent:
   image_input_mode: auto
   disabled_toolsets: []
   verbose: false
-  reasoning_effort: medium
+  reasoning_effort: xhigh
   personalities:
     helpful: You are a helpful, friendly AI assistant.
     concise: You are a concise assistant. Keep responses brief and to the point.
@@ -334,6 +334,8 @@ discord:
   reactions: true
   channel_prompts: {}
   server_actions: ''
+  enabled: true
+  bot_token_env: DISCORD_BOT_TOKEN
 whatsapp: {}
 telegram:
   reactions: false
@@ -393,6 +395,7 @@ onboarding:
   seen:
     openclaw_residue_cleanup: true
     tool_progress_prompt: true
+    busy_input_prompt: true
 updates:
   pre_update_backup: false
   backup_keep: 5
@@ -425,3 +428,5 @@ platform_toolsets:
   - hermes-yuanbao
   teams:
   - hermes-teams
+gateway:
+  enabled: true
