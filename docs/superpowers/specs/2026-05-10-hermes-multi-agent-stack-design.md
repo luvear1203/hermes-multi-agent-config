@@ -1,8 +1,10 @@
+> **DEPRECATED 2026-05-10** — replaced by [`2026-05-10-hermes-rebuild-and-knowledge-db-design.md`](./2026-05-10-hermes-rebuild-and-knowledge-db-design.md). Initial brainstorm assumed greenfield setup; the new spec correctly accounts for the existing 5-profile / 9-role Hermes runtime, OAuth-only directing-grade routing, wiki SoT, Mythrill VFX-pipeline reality, and AI Rookie 2026 contest constraints.
+
 # Hermes Multi-Agent Stack with Continuous Knowledge Curator — Design
 
 **Date**: 2026-05-10
 **Owner**: luvear1203
-**Status**: Brainstorming complete, awaiting user spec review
+**Status**: DEPRECATED — superseded
 
 ---
 
