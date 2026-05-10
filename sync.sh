@@ -84,5 +84,41 @@ if [ -d "$WIKI_SRC" ]; then
 fi
 
 echo ""
-echo "✅ 동기화 완료. git add + git commit + git push 진행하세요."
+echo "✅ 파일 동기화 완료."
 echo "   복원: bash $SCRIPT_DIR/restore.sh"
+
+# 8. PC-7: 자동 commit + push (Sub-Director가 cron으로 호출 시 처리)
+#    - 변경 없으면 no_changes 출력 후 exit 0
+#    - remote 없으면 local commit만 (no_remote)
+#    - push 실패 시 push_pending 상태로 exit 1 (Sub-Director가 escalate 판단)
+cd "$SCRIPT_DIR"
+
+ISO_NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+if [ -z "$(git status --porcelain)" ]; then
+    echo "✅ git 변경 없음 — commit/push 생략"
+    printf '{"changes": false, "commit_sha": null, "git_status": "no_changes", "error_msg": null}\n'
+    exit 0
+fi
+
+git add -A
+
+if ! git commit -m "[auto-sync] $ISO_NOW" --quiet; then
+    printf '{"changes": true, "commit_sha": null, "git_status": "commit_failed", "error_msg": "git commit returned non-zero"}\n'
+    exit 1
+fi
+
+COMMIT_SHA=$(git rev-parse --short HEAD)
+
+if [ -z "$(git remote 2>/dev/null)" ]; then
+    printf '{"changes": true, "commit_sha": "%s", "git_status": "no_remote", "error_msg": null}\n' "$COMMIT_SHA"
+    exit 0
+fi
+
+if PUSH_OUT=$(GIT_TERMINAL_PROMPT=0 git push 2>&1); then
+    printf '{"changes": true, "commit_sha": "%s", "git_status": "pushed", "error_msg": null}\n' "$COMMIT_SHA"
+else
+    PUSH_ERR_JSON=$(printf '%s' "$PUSH_OUT" | python3 -c "import sys, json; sys.stdout.write(json.dumps(sys.stdin.read()))")
+    printf '{"changes": true, "commit_sha": "%s", "git_status": "push_pending", "error_msg": %s}\n' "$COMMIT_SHA" "$PUSH_ERR_JSON"
+    exit 1
+fi

@@ -19,16 +19,16 @@
       "schedule_display": "0 * * * *",
       "repeat": {
         "times": null,
-        "completed": 0
+        "completed": 1
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-03T00:06:57.238544+09:00",
-      "next_run_at": "2026-05-11T02:00:00+09:00",
-      "last_run_at": null,
-      "last_status": null,
+      "next_run_at": "2026-05-11T03:00:00+09:00",
+      "last_run_at": "2026-05-11T02:01:55.668285+09:00",
+      "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "origin",
@@ -215,7 +215,79 @@
       "origin": null,
       "enabled_toolsets": null,
       "workdir": null
+    },
+    {
+      "id": "b5baf734899a",
+      "name": "sync_2h",
+      "prompt": "Run sync_2h. Steps:\n(1) delegate_task to sub-director with task: \"Run: bash /Users/main/hermes-multi-agent-config/sync.sh\nThe last stdout line is a JSON ack: {changes, commit_sha, git_status, error_msg}. git_status enum: no_changes | no_remote | pushed | push_pending | commit_failed.\nReply with the verbatim JSON ack ONLY. Do not retry. Do not add commentary.\"\n(2) Parse the JSON returned by Sub-Director.\n(3) If git_status \u2208 {no_changes, pushed, no_remote}: silent. Reply with Korean one-liner for local log. No user notification.\n(4) If git_status \u2208 {push_pending, commit_failed}: ESCALATE \u2014 send Discord DM in Korean with: error_msg verbatim + likely cause (401=credential expired, non-fast-forward=remote ahead, conflict=merge needed, hook fail=hook reject) + approval request \"\uc9c0\uae08 \ucc98\ub9ac\ud560\uae4c\uc694? \ub2e4\uc74c \uc8fc\uae30\ub85c \ubbf8\ub8f0\uae4c\uc694? \ucde8\uc18c\ud560\uae4c\uc694?\". Then HALT awaiting user reply.\n\nReply in Korean to summarise.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 */2 * * *",
+        "display": "0 */2 * * *"
+      },
+      "schedule_display": "0 */2 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-11T02:34:33.236870+09:00",
+      "next_run_at": "2026-05-11T04:00:00+09:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null
+    },
+    {
+      "id": "af73228c6ba5",
+      "name": "sync_squash_daily",
+      "prompt": "Run sync_squash_daily (best-effort, design v2 \uc778\uc815). Steps:\n(1) delegate_task to sub-director with task: \"Run: bash /Users/main/hermes-multi-agent-config/squash_yesterday.sh\nThe last stdout line is a JSON ack: {squashed, count, pushed, reason?, error_msg?}.\nreason enum: insufficient_commits | rebase_failed | force_push_blocked | no_remote.\nReply with the verbatim JSON ack ONLY. Do not retry. Do not add commentary.\"\n(2) Parse the JSON returned by Sub-Director.\n(3) If (squashed=true AND pushed=true) OR reason=insufficient_commits OR reason=no_remote: silent. Reply with Korean one-liner for local log. No user notification.\n(4) If reason \u2208 {rebase_failed, force_push_blocked}: send Discord DM in Korean \"\uc5b4\uc81c [auto-sync] squash \uc2e4\ud328 (reason: {reason}). error_msg: {error_msg}. \uc218\ub3d9 \uc815\ub9ac \ud544\uc694\uc2dc \ub2e4\uc74c \uba54\uc2dc\uc9c0\ub85c \uc54c\ub824\uc8fc\uc138\uc694.\" Non-blocking \u2014 do NOT halt (best-effort, manual cleanup OK per design v2).\n\nReply in Korean to summarise.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 4 * * *",
+        "display": "30 4 * * *"
+      },
+      "schedule_display": "30 4 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-11T02:37:38.514230+09:00",
+      "next_run_at": "2026-05-11T04:30:00+09:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null
     }
   ],
-  "updated_at": "2026-05-11T01:37:42.813143+09:00"
+  "updated_at": "2026-05-11T02:37:38.515357+09:00"
 }
