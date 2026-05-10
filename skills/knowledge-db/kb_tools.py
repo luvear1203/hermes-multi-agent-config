@@ -203,8 +203,8 @@ def kb_topic_register(name: str, description: str, keywords: list[str], crawl_fr
         "citation": f"topic:{name}",
         "language": "en", "embedding_model": "voyage-3", "confidence": "high",
     }
-    # topics collection is 1-dim placeholder (see scripts/create_collections.py micro-deviation)
-    body = {"points": [{"id": name, "vector": [0.0], "payload": payload}]}
+    # topics collection is 1-dim placeholder; Qdrant requires uint64/UUID for id.
+    body = {"points": [{"id": _to_qdrant_id(name), "vector": [0.0], "payload": payload}]}
     _qdrant_put("/collections/topics/points", body)
     return name
 
