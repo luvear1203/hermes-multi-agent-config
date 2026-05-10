@@ -4,7 +4,7 @@ model:
   base_url: https://api.anthropic.com
 agent:
   max_turns: 120
-  reasoning_effort: medium
+  reasoning_effort: xhigh
   api_max_retries: 3
 toolsets:
 - hermes-cli

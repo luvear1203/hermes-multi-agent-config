@@ -4,7 +4,7 @@ model:
   base_url: https://chatgpt.com/backend-api/codex
 agent:
   max_turns: 90
-  reasoning_effort: xhigh
+  reasoning_effort: high
   api_max_retries: 3
 toolsets:
   - hermes-cli
