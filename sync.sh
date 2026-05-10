@@ -48,10 +48,11 @@ else
     echo "  ⚠ bundled_manifest 없음 - 전체 스킬 복사됨"
 fi
 
-# 3. 크론 작업
-if [ -f "$HERMES_HOME/cron.db" ]; then
-    cp "$HERMES_HOME/cron.db" "$SCRIPT_DIR/cron/cron.db" 2>/dev/null || true
-    echo "  ✓ cron/cron.db"
+# 3. 크론 작업 (Hermes는 jobs.json 사용, cron.db는 미사용)
+mkdir -p "$SCRIPT_DIR/cron"
+if [ -f "$HERMES_HOME/cron/jobs.json" ]; then
+    cp "$HERMES_HOME/cron/jobs.json" "$SCRIPT_DIR/cron/jobs.json"
+    echo "  ✓ cron/jobs.json"
 fi
 
 # 4. 메인 config (참고용)
