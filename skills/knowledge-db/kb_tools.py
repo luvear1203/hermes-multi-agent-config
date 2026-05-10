@@ -210,12 +210,13 @@ def kb_topic_register(name: str, description: str, keywords: list[str], crawl_fr
 
 
 def kb_topic_list(status: str = "active") -> list[dict]:
+    """List topics filtered by status. Client-side filter (Qdrant payload index 미설정)."""
     res = _qdrant_post("/collections/topics/points/scroll", {
-        "filter": {"must": [{"key": "status", "match": {"value": status}}]},
         "limit": 100,
         "with_payload": True,
     })
-    return [p["payload"] for p in res.get("result", {}).get("points", [])]
+    points = res.get("result", {}).get("points", [])
+    return [p["payload"] for p in points if p.get("payload", {}).get("status") == status]
 
 
 def kb_stats() -> dict:
