@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Build artifacts
+.graphify_merged.json
+graphify-out/
+
+# Obsidian raw vault — 보관용 trash/archive 는 git/graphify 입력에서 제외
+# (디스크 보존, 검색·그래프 노이즈 차단 목적)
+raw/obsidian-vault/Brain/.trash/
+raw/obsidian-vault/Brain/99_archive/

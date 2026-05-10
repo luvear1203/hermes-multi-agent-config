@@ -1,24 +1,27 @@
 # Hermes Multi-Agent 설정
-# 보안 파일 - Git에 올리지 마세요
+# 보안 파일 — git 제외
 *.env
 .env
 .env.*
 
-# 세션 데이터
-sessions/
-*.db-journal
-*.db-wal
+# OAuth/API credentials (절대 git에 들어가면 안 됨)
+**/auth.json
+**/auth.lock
 
-# 로그
+# 세션·로그·런타임 데이터
+sessions/
 logs/
 *.log
+*.db-journal
+*.db-wal
+*.lock
 
 # 캐시
 __pycache__/
 *.pyc
 .DS_Store
 
-# 번들 스킬 (Hermes 설치 시 자동 설치됨)
+# 번들 skills (Hermes 설치 시 자동)
 skills/apple/
 skills/autonomous-ai-agents/
 skills/creative/
@@ -39,11 +42,23 @@ skills/note-taking/
 skills/productivity/
 skills/red-teaming/
 skills/research/
-skills/smart-home/
+skills/smart-media/
 skills/social-media/
 skills/software-development/
 skills/yuanbao/
 skills/.bundled_manifest
 skills/.curator_state
+
+# wiki 자동 생성 / 큰 파일 (별도 backup tar로 관리)
+wiki/raw/
+wiki/graphify-out/
+wiki/**/.tick.lock
+
+# Pre-flight backup tar
 backups/*.tar.gz
+
+# Python venv
 .venv/
+
+# Hermes 자체 코드 (별도 install)
+hermes-agent/
