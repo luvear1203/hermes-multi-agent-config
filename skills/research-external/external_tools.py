@@ -16,12 +16,18 @@ import xml.etree.ElementTree as ET
 
 
 def _get_with_backoff(url: str, *, params=None, headers=None, timeout: int = 30,
-                     max_retries: int = 3, backoff_base: float = 2.0) -> requests.Response:
-    """GET with retry on 429/5xx. arXiv/Semantic-Scholar free tier throttles aggressively."""
+                     max_retries: int = 3, backoff_base: float = 2.0,
+                     alert_service: str | None = None) -> requests.Response:
+    """GET with retry on 429/5xx. arXiv/Semantic-Scholar free tier throttles aggressively.
+
+    alert_service: if persistent 5xx after retries, fire Discord quota alert under this service name.
+    """
     last_err = None
+    last_status = 0
     for attempt in range(max_retries):
         try:
             r = requests.get(url, params=params, headers=headers, timeout=timeout)
+            last_status = r.status_code
             if r.status_code in (429, 500, 502, 503, 504):
                 last_err = requests.HTTPError(f"HTTP {r.status_code}", response=r)
                 if attempt < max_retries - 1:
@@ -34,7 +40,16 @@ def _get_with_backoff(url: str, *, params=None, headers=None, timeout: int = 30,
             if attempt < max_retries - 1:
                 time.sleep(backoff_base ** (attempt + 1))
                 continue
-            raise
+    # Exhausted: optional alert
+    if alert_service:
+        try:
+            import sys
+            sys.path.insert(0, str(__import__("pathlib").Path.home() / ".hermes" / "skills" / "knowledge-db"))
+            from quota_alert import alert_with_hint
+            cls = "rate_limit" if last_status == 429 else "persistent_5xx"
+            alert_with_hint(alert_service, cls, f"HTTP {last_status} after {max_retries} retries: {url[:200]}")
+        except Exception:
+            pass
     raise last_err if last_err else RuntimeError("retry loop exhausted without exception")
 
 
@@ -117,7 +132,7 @@ def arxiv_search(query: str, max_results: int = 10, since_days: int | None = Non
         from datetime import timedelta
         since = (datetime.now(timezone.utc) - timedelta(days=since_days)).strftime("%Y%m%d")
         q = f"{q} AND submittedDate:[{since}* TO 99999999*]"
-    r = _get_with_backoff(base, params={"search_query": q, "max_results": max_results})
+    r = _get_with_backoff(base, params={"search_query": q, "max_results": max_results}, alert_service="arxiv")
     ns = {"a": "http://www.w3.org/2005/Atom"}
     root = ET.fromstring(r.text)
     out = []
@@ -137,7 +152,7 @@ def arxiv_search(query: str, max_results: int = 10, since_days: int | None = Non
 
 def semantic_scholar_search(query: str, limit: int = 10) -> list[dict]:
     base = "https://api.semanticscholar.org/graph/v1/paper/search"
-    r = _get_with_backoff(base, params={"query": query, "limit": limit, "fields": "title,authors,year,abstract,url,externalIds"})
+    r = _get_with_backoff(base, params={"query": query, "limit": limit, "fields": "title,authors,year,abstract,url,externalIds"}, alert_service="semantic_scholar")
     out = []
     for p in r.json().get("data", []):
         out.append(normalize_chunk({
@@ -163,6 +178,14 @@ def github_search(query: str, sort: str = "stars", since_days: int | None = None
         headers["Authorization"] = f"Bearer {tok}"
     r = requests.get("https://api.github.com/search/repositories", headers=headers,
                      params={"q": q, "sort": sort, "per_page": limit}, timeout=30)
+    if r.status_code == 403 and "rate limit" in r.text.lower():
+        try:
+            import sys
+            sys.path.insert(0, str(__import__("pathlib").Path.home() / ".hermes" / "skills" / "knowledge-db"))
+            from quota_alert import alert_with_hint
+            alert_with_hint("github", "rate_limit", f"HTTP 403 rate limit: {r.text[:200]}")
+        except Exception:
+            pass
     r.raise_for_status()
     out = []
     for repo in r.json().get("items", []):
@@ -185,6 +208,15 @@ def tavily_search(query: str, max_results: int = 5) -> list[dict]:
         "query": query,
         "max_results": max_results,
     }, timeout=30)
+    if r.status_code in (429, 432, 433):
+        try:
+            import sys
+            sys.path.insert(0, str(__import__("pathlib").Path.home() / ".hermes" / "skills" / "knowledge-db"))
+            from quota_alert import alert_with_hint
+            cls = "quota_exhausted" if "quota" in r.text.lower() or "month" in r.text.lower() else "rate_limit"
+            alert_with_hint("tavily", cls, f"HTTP {r.status_code}: {r.text[:300]}")
+        except Exception:
+            pass
     r.raise_for_status()
     out = []
     for item in r.json().get("results", []):

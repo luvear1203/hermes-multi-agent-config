@@ -77,6 +77,13 @@ def _qdrant_get(path: str, params: dict | None = None) -> dict:
 
 def _qdrant_put(path: str, body: dict) -> dict:
     r = requests.put(f"{_qdrant_url()}{path}", headers=_qdrant_headers(), json=body, timeout=30)
+    if r.status_code in (403, 429, 507):
+        try:
+            from quota_alert import alert_with_hint
+            error_class = "storage_full" if r.status_code == 507 else "rate_limit"
+            alert_with_hint("qdrant", error_class, f"PUT {path} HTTP {r.status_code}: {r.text[:300]}")
+        except Exception:
+            pass
     r.raise_for_status()
     return r.json()
 
@@ -92,16 +99,21 @@ def _embed(text: str) -> list[float]:
 
 
 def _embed_batch(texts: list[str], max_retries: int = 5, backoff_base: float = 2.0) -> list[list[float]]:
-    """Voyage-3 batch embedding with backoff. Free tier ~3 RPM; batching reduces request count."""
+    """Voyage-3 batch embedding with backoff. Free tier ~3 RPM; batching reduces request count.
+
+    On exhausted retries, fires Discord quota alert (rate_limit or quota_exhausted) before raising.
+    """
     headers = {"Authorization": f"Bearer {_env('VOYAGE_API_KEY')}", "Content-Type": "application/json"}
     body = {"input": texts, "model": "voyage-3"}
     last_err: Exception | None = None
+    last_status: int = 0
     for attempt in range(max_retries):
         try:
             r = requests.post("https://api.voyageai.com/v1/embeddings", headers=headers, json=body, timeout=120)
+            last_status = r.status_code
             if r.status_code in (429, 500, 502, 503, 504):
                 last_err = requests.HTTPError(f"HTTP {r.status_code}", response=r)
-                wait = backoff_base ** (attempt + 2)  # 4s, 8s, 16s, 32s, 64s
+                wait = backoff_base ** (attempt + 2)
                 time.sleep(wait)
                 continue
             r.raise_for_status()
@@ -109,6 +121,16 @@ def _embed_batch(texts: list[str], max_retries: int = 5, backoff_base: float = 2
         except requests.RequestException as e:
             last_err = e
             time.sleep(backoff_base ** (attempt + 2))
+    # Exhausted: alert + raise
+    try:
+        from quota_alert import alert_with_hint  # noqa: E402
+        body_text = ""
+        if last_err is not None and getattr(last_err, "response", None) is not None:
+            body_text = last_err.response.text[:300] if last_err.response is not None else ""
+        cls = "quota_exhausted" if "quota" in body_text.lower() or "exceeded your" in body_text.lower() else "rate_limit"
+        alert_with_hint("voyage", cls, f"HTTP {last_status} after {max_retries} retries: {body_text}")
+    except Exception:
+        pass
     raise last_err if last_err else RuntimeError("voyage embed retry exhausted")
 
 
