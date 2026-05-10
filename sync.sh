@@ -10,7 +10,7 @@ HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
 echo "🔁 Hermes 설정을 $SCRIPT_DIR 으로 동기화합니다..."
 
 # 1. 프로필 설정 (config.yaml + SOUL.md)
-for profile in orchestrator researcher dev-gemma; do
+for profile in orchestrator sub-director researcher tech-artist dev-gemma; do
     PROFILE_DIR="$HERMES_HOME/profiles/$profile"
     DEST_DIR="$SCRIPT_DIR/profiles/$profile"
     mkdir -p "$DEST_DIR"

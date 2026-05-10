@@ -1,0 +1,11 @@
+model:
+  default: gpt-5.5
+  provider: openai-codex
+  base_url: https://chatgpt.com/backend-api/codex
+agent:
+  max_turns: 90
+  reasoning_effort: xhigh
+  api_max_retries: 3
+toolsets:
+  - hermes-cli
+  - knowledge-db
