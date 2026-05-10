@@ -7,6 +7,8 @@ and skip on content_hash collision (dedupe).
 from __future__ import annotations
 import hashlib
 import os
+import time
+import uuid
 import requests
 from datetime import datetime, timezone
 
@@ -25,6 +27,17 @@ def validate_payload(p: dict) -> None:
     missing = [k for k in REQUIRED_PAYLOAD if k not in p or p[k] in (None, "")]
     if missing:
         raise ValueError(f"missing required payload fields: {missing}")
+
+
+def _to_qdrant_id(raw: str) -> str:
+    """Qdrant point IDs must be uint64 or UUID. Convert arbitrary strings via deterministic UUID5."""
+    try:
+        return str(uuid.UUID(raw))
+    except (ValueError, TypeError):
+        pass
+    if raw.isdigit() and int(raw) < 2**64:
+        return raw
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, raw))
 
 
 def _read_env(key: str) -> str:
@@ -75,14 +88,68 @@ def _qdrant_post(path: str, body: dict) -> dict:
 
 
 def _embed(text: str) -> list[float]:
-    r = requests.post(
-        "https://api.voyageai.com/v1/embeddings",
-        headers={"Authorization": f"Bearer {_env('VOYAGE_API_KEY')}", "Content-Type": "application/json"},
-        json={"input": text, "model": "voyage-3"},
-        timeout=60,
-    )
-    r.raise_for_status()
-    return r.json()["data"][0]["embedding"]
+    return _embed_batch([text])[0]
+
+
+def _embed_batch(texts: list[str], max_retries: int = 5, backoff_base: float = 2.0) -> list[list[float]]:
+    """Voyage-3 batch embedding with backoff. Free tier ~3 RPM; batching reduces request count."""
+    headers = {"Authorization": f"Bearer {_env('VOYAGE_API_KEY')}", "Content-Type": "application/json"}
+    body = {"input": texts, "model": "voyage-3"}
+    last_err: Exception | None = None
+    for attempt in range(max_retries):
+        try:
+            r = requests.post("https://api.voyageai.com/v1/embeddings", headers=headers, json=body, timeout=120)
+            if r.status_code in (429, 500, 502, 503, 504):
+                last_err = requests.HTTPError(f"HTTP {r.status_code}", response=r)
+                wait = backoff_base ** (attempt + 2)  # 4s, 8s, 16s, 32s, 64s
+                time.sleep(wait)
+                continue
+            r.raise_for_status()
+            return [d["embedding"] for d in r.json()["data"]]
+        except requests.RequestException as e:
+            last_err = e
+            time.sleep(backoff_base ** (attempt + 2))
+    raise last_err if last_err else RuntimeError("voyage embed retry exhausted")
+
+
+def kb_upsert_batch(collection: str, items: list[dict]) -> dict[str, int]:
+    """Batch upsert. items=[{text, payload, point_id?}]. Returns {created, skipped_dedupe} counts.
+
+    Reduces Voyage API calls by batching embeddings. Dedupe still per-item via Qdrant GET.
+    """
+    counts = {"created": 0, "skipped_dedupe": 0}
+    pending: list[tuple[str, str, dict]] = []  # (pid, text, payload)
+    for item in items:
+        text = item["text"]
+        payload = dict(item["payload"])
+        if "content_hash" not in payload:
+            payload["content_hash"] = compute_content_hash(text)
+        if "retrieved_at" not in payload:
+            payload["retrieved_at"] = datetime.now(timezone.utc).isoformat()
+        if "embedding_model" not in payload:
+            payload["embedding_model"] = "voyage-3"
+        validate_payload(payload)
+        raw_pid = item.get("point_id") or payload["content_hash"].split(":", 1)[1][:32]
+        pid = _to_qdrant_id(raw_pid)
+        try:
+            existing = _qdrant_get(f"/collections/{collection}/points/{pid}")
+            if existing.get("result"):
+                counts["skipped_dedupe"] += 1
+                continue
+        except requests.HTTPError as e:
+            if e.response.status_code != 404:
+                raise
+        pending.append((pid, text, payload))
+
+    if not pending:
+        return counts
+
+    vectors = _embed_batch([t for _, t, _ in pending])
+    points = [{"id": pid, "vector": vec, "payload": payload}
+              for (pid, _, payload), vec in zip(pending, vectors)]
+    _qdrant_put(f"/collections/{collection}/points", {"points": points})
+    counts["created"] = len(pending)
+    return counts
 
 
 def kb_search(collection: str, query: str, top_k: int = 10, filter: dict | None = None) -> list[dict]:
@@ -109,7 +176,8 @@ def kb_upsert(collection: str, text: str, payload: dict, point_id: str | None = 
         payload["embedding_model"] = "voyage-3"
     validate_payload(payload)
 
-    pid = point_id or payload["content_hash"].split(":", 1)[1][:32]
+    raw_pid = point_id or payload["content_hash"].split(":", 1)[1][:32]
+    pid = _to_qdrant_id(raw_pid)
     try:
         existing = _qdrant_get(f"/collections/{collection}/points/{pid}")
         if existing.get("result"):
