@@ -74,8 +74,8 @@
     },
     {
       "id": "3f50ccf34019",
-      "name": "topic_crawl_daily",
-      "prompt": "Run the daily Continuous Researcher crawl.\n\nProcedure:\n1. Execute: python ~/.hermes/skills/research-external/crawl_loop.py --mode daily\n2. The script: for each active topic in the `topics` Qdrant collection, query arxiv (since 1 day) and github (pushed last 1 day), normalize via normalize_chunk, dedupe-upsert into kb_papers / kb_oss_projects collections.\n3. Source-Enforcement: discard chunks without source URL/DOI.\n4. After completion, append a one-line summary to ~/.hermes/wiki/log.md (Korean OK) of form:\n   [YYYY-MM-DD HH:MM] daily-crawl | topics=N | created=X | dedupe=Y | failed=Z\n\nIf topics collection is empty, log \"no active topics\" and exit cleanly.\nIf Voyage TPM rate-limit hits, the script handles backoff. If exhausted after retries, log error and exit non-zero.\n\nReply in Korean to summarise the outcome.",
+      "name": "topic_crawl_6h",
+      "prompt": "Run the 6-hour Continuous Researcher crawl (4\u00d7 per day).\n\nProcedure:\n1. Execute: python ~/.hermes/skills/research-external/crawl_loop.py --mode daily\n2. The script: for each active topic in the `topics` Qdrant collection, query arxiv (since 1 day) and github (pushed last 1 day), normalize via normalize_chunk, dedupe-upsert into kb_papers / kb_oss_projects collections.\n3. Source-Enforcement: discard chunks without source URL/DOI.\n4. Append a one-line summary to ~/.hermes/wiki/log.md (Korean OK):\n   [YYYY-MM-DD HH:MM] crawl-6h | topics=N | created=X | dedupe=Y | failed=Z\n\nNote: 6-hour cadence means each cycle re-queries arxiv (since=1d) and github (pushed=1d) \u2014 most results will dedupe except for new uploads in that 6-hour window.\n\nIf topics collection is empty, log \"no active topics\" and exit cleanly.\nIf Voyage TPM rate-limit hits, the script handles backoff. If exhausted after retries, log error and exit non-zero.\n\nReply in Korean to summarise the outcome.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -85,10 +85,10 @@
       "context_from": null,
       "schedule": {
         "kind": "cron",
-        "expr": "0 3 * * *",
-        "display": "0 3 * * *"
+        "expr": "0 */6 * * *",
+        "display": "0 */6 * * *"
       },
-      "schedule_display": "0 3 * * *",
+      "schedule_display": "0 */6 * * *",
       "repeat": {
         "times": null,
         "completed": 0
@@ -98,7 +98,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-11T00:34:07.522908+09:00",
-      "next_run_at": "2026-05-11T03:00:00+09:00",
+      "next_run_at": "2026-05-11T06:00:00+09:00",
       "last_run_at": null,
       "last_status": null,
       "last_error": null,
@@ -217,5 +217,5 @@
       "workdir": null
     }
   ],
-  "updated_at": "2026-05-11T01:09:26.221338+09:00"
+  "updated_at": "2026-05-11T01:37:42.813143+09:00"
 }
