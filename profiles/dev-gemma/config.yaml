@@ -1,10 +1,13 @@
 # dev-gemma — Code Implementation Specialist
-# Reactivated 2026-05-07: assigned gemma-4-31b-it via Google AI Studio (free tier).
-# Same model as tech-artist but separate role: dev-gemma writes/tests code,
-# tech-artist translates NL to physical parameters.
+# 2026-05-10 swap: gemma-4-31b-it (Google AI Studio Tier 1) → claude-haiku-4-5-20251001
+# Reason: Tier 1 paid에서도 gemma-4-31b는 16k TPM hard cap, Hermes prompt(~25k 토큰, 89 skill 로드)가
+# 구조적으로 1요청 한도 초과. Haiku 4.5는 Anthropic Max OAuth 구독 내 (추가 비용 0), 200K context.
+# 향후 자체 머신 도입 후 로컬 오픈소스 worker(gemma/kimi 등)로 재교체 예정.
 model:
-  default: gemma-4-31b-it
-  provider: gemini
-  base_url: https://generativelanguage.googleapis.com/v1beta
+  default: claude-haiku-4-5-20251001
+  provider: anthropic
+  base_url: https://api.anthropic.com
 agent:
   max_turns: 90
+  reasoning_effort: medium
+  api_max_retries: 3
